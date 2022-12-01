@@ -92,3 +92,50 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 }
+
+class _InputForm extends StatefulWidget {
+  const _InputForm({super.key, required this.onSubmit});
+
+  final Function(String) onSubmit;
+  @override
+  State<StatefulWidget> createState() => _InputFormState();
+}
+
+class _InputFormState extends State<_InputForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _textEditController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        key: _formKey,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextFormField(
+              controller: _textEditController,
+              maxLines: 5,
+              decoration: const InputDecoration(
+                hintText: "文章を入力してください",
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "文章が入力されていません";
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: () {
+                final formState = _formKey.currentState!;
+                if (!formState.validate()) {
+                  return;
+                }
+                widget.onSubmit(_textEditController.text);
+              },
+              child: const Text("変換"))
+        ]));
+  }
+}
